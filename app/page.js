@@ -1,65 +1,120 @@
-import Image from "next/image";
 
-export default function Home() {
+import Navbar from '@/components/Navbar';
+import CategoryCard from '@/components/CategoryCard';
+import ProductCardDetail from '@/components/ProductCardDetail';
+import Carousel from '@/components/Carousel';
+import Footer from '@/components/Footer';
+import { categories, carouselItems, allProducts } from '@/lib/data';
+
+//Get categories
+async function getCategories() {
+  const res = await fetch("http://localhost:5000/api/categories", {
+    cache: "no-store",
+  });
+
+  return res.json();
+}
+
+//Get trendings & offers
+async function getTrendings() {
+  const res = await fetch("http://localhost:5000/api/trendings", {
+    cache: "no-store",
+  });
+
+  return res.json();
+}
+//Get trending products
+async function getTrendingProducts() {
+  const res = await fetch("http://localhost:5000/api/trendingproducts", {
+    cache: "no-store",
+  });
+
+  return res.json();
+}
+//Get recommended products
+async function getRecommendedProducts() {
+  const res = await fetch("http://localhost:5000/api/recommendedProducts", {
+    cache: "no-store",
+  });
+
+  return res.json();
+}
+//Get all products
+async function getAllProducts() {
+  const res = await fetch("http://localhost:5000/api/allProducts", {
+    cache: "no-store",
+  });
+
+  return res.json();
+}
+
+export default async function Home() {
+  const categories = await getCategories();
+  const trendings = await getTrendings();
+  const trendingProducts = await getTrendingProducts();
+  const recommendedProducts = await getRecommendedProducts();
+  const allProducts = await getAllProducts();
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main>
+      {/* Navbar */}
+      <Navbar />
+
+      <div className="bg-gray-50">
+        {/* Hero / Top Categories Section */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Top Categories</h2>
+
+          {/* Categories Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {categories.map((category) => (
+              <CategoryCard
+                key={category._id}
+                name={category.name}
+                bgColor={category.bgColor}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Carousel Section */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Trending & Offers</h2>
+          <Carousel items={trendings} />
+        </section>
+
+        {/* Trending Products Section */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Trending Products</h2>
+
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {allProducts.slice(0, 8).map((product) => (
+              <ProductCardDetail
+                key={product._id}
+                product={product}
+              />
+            ))}
+          </div>
+        </section>
+
+        {/* Recommended Products Section */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 bg-white rounded-lg">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-8">Recommended For You</h2>
+
+          {/* Products Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {allProducts.slice(4, 12).map((product) => (
+              <ProductCardDetail
+                key={product._id}
+                product={product}
+              />
+            ))}
+          </div>
+        </section>
+      </div>
+
+      {/* Footer */}
+      <Footer />
+    </main>
   );
 }
