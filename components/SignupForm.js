@@ -15,7 +15,7 @@ import {
 
 export default function SignupForm() {
   const router = useRouter();
-  const { login } = useAuth(); // ✅ use login instead of local signup
+  const { signup } = useAuth(); // ✅ use login instead of local signup
   const [isLoading, setIsLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
@@ -78,32 +78,13 @@ export default function SignupForm() {
     setIsLoading(true);
 
     try {
-      // ✅ Call Express backend
-      const res = await fetch('http://localhost:5000/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
+      const user = await signup(
+        formData.email,
+        formData.password,
+        formData.name
+      );
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || 'Signup failed');
-      }
-
-      // ✅ Store token
-      localStorage.setItem('token', data.token);
-
-      // ✅ Update Auth Context
-      login(data);
-
-      toast.success(`Welcome, ${data.name}! Your account has been created.`);
+      toast.success(`Welcome, ${user.name}! Your account has been created.`);
 
       router.push('/products');
 
@@ -138,11 +119,10 @@ export default function SignupForm() {
           value={formData.name}
           onChange={handleChange}
           disabled={isLoading}
-          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
-            errors.name
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${errors.name
               ? 'border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:ring-blue-500'
-          } disabled:bg-gray-100 disabled:cursor-not-allowed`}
+            } disabled:bg-gray-100 disabled:cursor-not-allowed`}
           placeholder="John Doe"
         />
         {errors.name && (
@@ -162,11 +142,10 @@ export default function SignupForm() {
           value={formData.email}
           onChange={handleChange}
           disabled={isLoading}
-          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
-            errors.email
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${errors.email
               ? 'border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:ring-blue-500'
-          } disabled:bg-gray-100 disabled:cursor-not-allowed`}
+            } disabled:bg-gray-100 disabled:cursor-not-allowed`}
           placeholder="you@example.com"
         />
         {errors.email && (
@@ -186,11 +165,10 @@ export default function SignupForm() {
           value={formData.password}
           onChange={handleChange}
           disabled={isLoading}
-          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
-            errors.password
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${errors.password
               ? 'border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:ring-blue-500'
-          } disabled:bg-gray-100 disabled:cursor-not-allowed`}
+            } disabled:bg-gray-100 disabled:cursor-not-allowed`}
           placeholder="••••••••"
         />
         {errors.password && (
@@ -203,11 +181,10 @@ export default function SignupForm() {
               {[0, 1, 2, 3, 4, 5].map((index) => (
                 <div
                   key={index}
-                  className={`h-2 flex-1 rounded-full transition ${
-                    index < passwordStrength
+                  className={`h-2 flex-1 rounded-full transition ${index < passwordStrength
                       ? strengthColors[passwordStrength]
                       : 'bg-gray-200'
-                  }`}
+                    }`}
                 />
               ))}
             </div>
@@ -243,11 +220,10 @@ export default function SignupForm() {
           value={formData.confirmPassword}
           onChange={handleChange}
           disabled={isLoading}
-          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
-            errors.confirmPassword
+          className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${errors.confirmPassword
               ? 'border-red-500 focus:ring-red-500'
               : 'border-gray-300 focus:ring-blue-500'
-          } disabled:bg-gray-100 disabled:cursor-not-allowed`}
+            } disabled:bg-gray-100 disabled:cursor-not-allowed`}
           placeholder="••••••••"
         />
         {errors.confirmPassword && (

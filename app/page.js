@@ -8,7 +8,7 @@ import { categories, carouselItems, allProducts } from '@/lib/data';
 
 //Get categories
 async function getCategories() {
-  const res = await fetch("http://localhost:5000/api/categories", {
+  const res = await fetch("https://backend-1wke.onrender.com/api/categories", {
     cache: "no-store",
   });
 
@@ -17,7 +17,7 @@ async function getCategories() {
 
 //Get trendings & offers
 async function getTrendings() {
-  const res = await fetch("http://localhost:5000/api/trendings", {
+  const res = await fetch("https://backend-1wke.onrender.com/api/trendings", {
     cache: "no-store",
   });
 
@@ -25,7 +25,7 @@ async function getTrendings() {
 }
 //Get trending products
 async function getTrendingProducts() {
-  const res = await fetch("http://localhost:5000/api/trendingproducts", {
+  const res = await fetch("https://backend-1wke.onrender.com/api/trendingproducts", {
     cache: "no-store",
   });
 
@@ -33,7 +33,7 @@ async function getTrendingProducts() {
 }
 //Get recommended products
 async function getRecommendedProducts() {
-  const res = await fetch("http://localhost:5000/api/recommendedProducts", {
+  const res = await fetch("https://backend-1wke.onrender.com/api/recommendedProducts", {
     cache: "no-store",
   });
 
@@ -41,7 +41,7 @@ async function getRecommendedProducts() {
 }
 //Get all products
 async function getAllProducts() {
-  const res = await fetch("http://localhost:5000/api/allProducts", {
+  const res = await fetch("https://backend-1wke.onrender.com/api/allProducts", {
     cache: "no-store",
   });
 
