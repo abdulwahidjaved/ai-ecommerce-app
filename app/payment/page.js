@@ -60,7 +60,7 @@ export default function PaymentPage() {
       setIsProcessing(true);
 
       // 1️⃣ Create order from backend
-      const res = await fetch("http://localhost:5000/api/payment/create-order", {
+      const res = await fetch("https://backend-8sca.onrender.com/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: pendingOrder.total }),
@@ -80,7 +80,7 @@ export default function PaymentPage() {
         handler: async function (response) {
           // 3️⃣ Verify Payment
           const verifyRes = await fetch(
-            "http://localhost:5000/api/payment/verify-payment",
+            "https://backend-8sca.onrender.com/api/payment/verify-payment",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -91,14 +91,9 @@ export default function PaymentPage() {
           const data = await verifyRes.json();
 
           if (data.success) {
-            toast.success("Payment successful!");
-
-            clearCart();
-            sessionStorage.removeItem("pendingOrder");
-
-            router.push("/order-confirmation");
+            router.push("/success");
           } else {
-            toast.error("Payment verification failed");
+            router.push("/failure");
           }
         },
 

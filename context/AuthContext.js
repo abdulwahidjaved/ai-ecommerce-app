@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
   const signup = async (email, password, name) => {
     setIsLoading(true);
 
-    const res = await fetch('https://backend-1wke.onrender.com/api/auth/signup', {
+    const res = await fetch('https://backend-8sca.onrender.com/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, name }),
@@ -69,7 +69,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     setIsLoading(true);
 
-    const res = await fetch('https://backend-1wke.onrender.com/api/auth/login', {
+    const res = await fetch('https://backend-8sca.onrender.com/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -103,7 +103,7 @@ export function AuthProvider({ children }) {
   const updateProfile = async (name) => {
     if (!user) throw new Error('No user logged in');
 
-    const res = await fetch('https://backend-1wke.onrender.com/api/auth/update-profile', {
+    const res = await fetch('https://backend-8sca.onrender.com/api/auth/update-profile', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: user.id, name }),
@@ -127,7 +127,7 @@ export function AuthProvider({ children }) {
   const changePassword = async (oldPassword, newPassword) => {
     if (!user) throw new Error('No user logged in');
 
-    const res = await fetch('https://backend-1wke.onrender.com/api/auth/change-password', {
+    const res = await fetch('https://backend-8sca.onrender.com/api/auth/change-password', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
