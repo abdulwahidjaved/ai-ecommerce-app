@@ -54,66 +54,68 @@ export default function PaymentPage() {
   const handlePayment = async (e) => {
     e.preventDefault();
 
-    if (!pendingOrder) {
-      toast.error('Order data not found');
-      return;
-    }
-
-    // Validate required fields
-    if (paymentMethod === 'upi' && !upiId.trim()) {
-      toast.error('Please enter your UPI ID');
-      return;
-    }
-
-    if (paymentMethod === 'card') {
-      if (
-        !cardDetails.cardNumber.trim() ||
-        !cardDetails.expiryDate.trim() ||
-        !cardDetails.cvv.trim()
-      ) {
-        toast.error('Please fill in all card details');
-        return;
-      }
-    }
-
-    setIsProcessing(true);
+    if (!pendingOrder) return;
 
     try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      setIsProcessing(true);
 
-      // Save the order with payment details to localStorage
-      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-      const completedOrder = {
-        ...pendingOrder,
-        status: 'processing',
-        paymentMethod,
-        paymentId: `PAY-${Date.now()}`,
-        paidAt: new Date().toISOString(),
+      // 1️⃣ Create order from backend
+      const res = await fetch("http://localhost:5000/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: pendingOrder.total }),
+      });
+
+      const order = await res.json();
+
+      // 2️⃣ Open Razorpay
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: "INR",
+        name: "Your Store Name",
+        description: "Order Payment",
+        order_id: order.id,
+
+        handler: async function (response) {
+          // 3️⃣ Verify Payment
+          const verifyRes = await fetch(
+            "http://localhost:5000/api/payment/verify-payment",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(response),
+            }
+          );
+
+          const data = await verifyRes.json();
+
+          if (data.success) {
+            toast.success("Payment successful!");
+
+            clearCart();
+            sessionStorage.removeItem("pendingOrder");
+
+            router.push("/order-confirmation");
+          } else {
+            toast.error("Payment verification failed");
+          }
+        },
+
+        theme: {
+          color: "#2563eb",
+        },
       };
-      orders.push(completedOrder);
-      localStorage.setItem('orders', JSON.stringify(orders));
 
-      console.log('[v0] Order saved to localStorage:', completedOrder.id);
-
-      // Clear the cart after successful payment
-      clearCart();
-      console.log('[v0] Cart cleared after payment');
-
-      // Clear pending order from sessionStorage
-      sessionStorage.removeItem('pendingOrder');
-
-      toast.success('Payment successful! Order confirmed.');
-
-      // Navigate to order confirmation
-      router.push(`/order-confirmation/${completedOrder.id}`);
+      const rzp = new window.Razorpay(options);
+      rzp.open();
     } catch (error) {
-      console.error('[v0] Payment error:', error);
-      toast.error('Payment failed. Please try again.');
+      console.error(error);
+      toast.error("Payment failed");
+    } finally {
       setIsProcessing(false);
     }
   };
-
   if (!pendingOrder) {
     return (
       <div className="min-h-screen bg-white flex flex-col">
