@@ -21,10 +21,10 @@ export default function ProductCard({ name, price, discount, image }) {
 
         {/* Price Section */}
         <div className="flex items-center gap-2 mb-4">
-          <span className="text-2xl font-bold text-blue-600">${price}</span>
+          <span className="text-2xl font-bold text-blue-600">₹{price}</span>
           {discount && (
             <span className="text-sm text-gray-500 line-through">
-              ${Math.round(price / (1 - discount / 100))}
+              ₹{Math.round(price / (1 - discount / 100))}
             </span>
           )}
         </div>

@@ -4,7 +4,7 @@ import ProductsClient from "./ProductsClient";
 
 async function getAllProducts() {
   try {
-    const res = await fetch("https://backend-8sca.onrender.com/api/allProducts", {
+    const res = await fetch("http://localhost:5000/api/allProducts", {
       cache: "no-store", // always fresh data
     });
 

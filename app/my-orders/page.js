@@ -144,7 +144,7 @@ export default function MyOrdersPage() {
                         {/* Total */}
                         <div className="text-right">
                           <p className="text-lg font-bold text-gray-900">
-                            ${order.total.toFixed(2)}
+                            ₹{(order?.total ?? 0).toFixed(2)}
                           </p>
                           <p className="text-xs text-gray-600">Total</p>
                         </div>
@@ -182,7 +182,7 @@ export default function MyOrdersPage() {
                             <p className="font-medium text-gray-900">{item.name}</p>
                             <p className="text-gray-600">Qty: {item.quantity}</p>
                           </div>
-                          <p className="font-medium text-gray-900">${(item.price * item.quantity).toFixed(2)}</p>
+                          <p className="font-medium text-gray-900">₹{((item.price * item.quantity) ?? 0).toFixed(2)}</p>
                         </div>
                       ))}
                     </div>
@@ -202,21 +202,21 @@ export default function MyOrdersPage() {
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Subtotal</span>
-                      <span className="font-medium text-gray-900">${selectedOrder.subtotal.toFixed(2)}</span>
+                      <span className="font-medium text-gray-900">₹{(selectedOrder?.subtotal ?? 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Tax (5%)</span>
-                      <span className="font-medium text-gray-900">${selectedOrder.tax.toFixed(2)}</span>
+                      <span className="font-medium text-gray-900">₹{(selectedOrder?.tax?? 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Shipping</span>
                       <span className="font-medium text-gray-900">
-                        {selectedOrder.shipping === 0 ? 'Free' : `$${selectedOrder.shipping.toFixed(2)}`}
+                        {selectedOrder.shipping === 0 ? 'Free' : `₹${(selectedOrder?.shipping ?? 0).toFixed(2)}`}
                       </span>
                     </div>
                     <div className="flex justify-between text-lg font-bold border-t border-gray-200 pt-3">
                       <span>Total</span>
-                      <span>${selectedOrder.total.toFixed(2)}</span>
+                      <span>₹{(selectedOrder?.total ?? 0).toFixed(2)}</span>
                     </div>
                   </div>
 

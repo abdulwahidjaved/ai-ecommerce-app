@@ -13,17 +13,17 @@ export default function OrderSummary({ subtotal, gstRate = 5, showButton = true,
       <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
         <div className="flex justify-between">
           <span className="text-gray-600">Subtotal</span>
-          <span className="font-semibold text-gray-900">${subtotal.toFixed(2)}</span>
+          <span className="font-semibold text-gray-900">₹{subtotal.toFixed(2)}</span>
         </div>
 
         <div className="flex justify-between">
           <span className="text-gray-600">GST ({gstRate}%)</span>
-          <span className="font-semibold text-gray-900">${gstAmount.toFixed(2)}</span>
+          <span className="font-semibold text-gray-900">₹{gstAmount.toFixed(2)}</span>
         </div>
 
         <div className="flex justify-between text-lg font-bold text-gray-900">
           <span>Total</span>
-          <span className="text-blue-600">${total.toFixed(2)}</span>
+          <span className="text-blue-600">₹{total.toFixed(2)}</span>
         </div>
       </div>
 

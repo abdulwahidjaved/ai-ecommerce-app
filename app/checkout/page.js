@@ -133,7 +133,7 @@ export default function CheckoutPage() {
                       {item.name} × {item.quantity}
                     </span>
                     <span className="font-semibold">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      ₹{(item.price * item.quantity).toFixed(2)}
                     </span>
                   </div>
                 ))}

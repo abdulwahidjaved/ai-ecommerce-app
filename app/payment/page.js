@@ -17,6 +17,7 @@ export default function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [pendingOrder, setPendingOrder] = useState(null);
   const [upiId, setUpiId] = useState('');
+  const { user } = useAuth();
   const [cardDetails, setCardDetails] = useState({
     cardNumber: '',
     expiryDate: '',
@@ -59,16 +60,21 @@ export default function PaymentPage() {
     try {
       setIsProcessing(true);
 
-      // 1️⃣ Create order from backend
-      const res = await fetch("https://backend-8sca.onrender.com/api/payment/create-order", {
+      const res = await fetch("http://localhost:5000/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: pendingOrder.total }),
       });
 
-      const order = await res.json();
+      const data = await res.json();
 
-      // 2️⃣ Open Razorpay
+      if (!data.success) {
+        toast.error("Order creation failed");
+        return;
+      }
+
+      const order = data.order;
+
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: order.amount,
@@ -78,19 +84,53 @@ export default function PaymentPage() {
         order_id: order.id,
 
         handler: async function (response) {
-          // 3️⃣ Verify Payment
           const verifyRes = await fetch(
-            "https://backend-8sca.onrender.com/api/payment/verify-payment",
+            "http://localhost:5000/api/payment/verify-payment",
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(response),
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
             }
           );
 
-          const data = await verifyRes.json();
+          const verifyData = await verifyRes.json();
 
-          if (data.success) {
+          if (verifyData.success) {
+            const newOrder = {
+              id: "ORD-" + Date.now(),
+              userId: user.id, // IMPORTANT
+              items: pendingOrder.items,
+              subtotal: pendingOrder.subtotal,
+              tax: pendingOrder.gstAmount,
+              shipping: 0,
+              total: pendingOrder.total,
+              status: "pending",
+              createdAt: new Date().toISOString(),
+              shippingAddress: {
+                fullName: pendingOrder.fullName,
+                address: pendingOrder.address,
+                city: pendingOrder.city,
+                state: pendingOrder.state || "",
+                zipCode: pendingOrder.pincode,
+              },
+            };
+
+            // Get existing orders
+            const existingOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+
+            // Add new order
+            existingOrders.push(newOrder);
+
+            // Save back to localStorage
+            localStorage.setItem("orders", JSON.stringify(existingOrders));
+
+            // Store for success page
+            sessionStorage.setItem("orderData", JSON.stringify(newOrder));
+
             router.push("/success");
           } else {
             router.push("/failure");
@@ -334,24 +374,24 @@ export default function PaymentPage() {
                 <div className="space-y-3 mb-4 pb-4 border-b border-gray-200">
                   <div className="flex justify-between text-gray-600">
                     <span>Subtotal</span>
-                    <span className="font-semibold">${pendingOrder.subtotal.toFixed(2)}</span>
+                    <span className="font-semibold">₹{pendingOrder?.subtotal?.toFixed(2) || "0.0"}</span>
                   </div>
 
                   <div className="flex justify-between text-gray-600">
                     <span>Tax (5%)</span>
-                    <span className="font-semibold">${pendingOrder.tax.toFixed(2)}</span>
+                    <span className="font-semibold">₹{pendingOrder?.tax?.toFixed(2) || "0.0"}</span>
                   </div>
 
                   <div className="flex justify-between text-gray-600">
                     <span>Shipping</span>
                     <span className="font-semibold">
-                      {pendingOrder.shipping === 0 ? 'Free' : `$${pendingOrder.shipping.toFixed(2)}`}
+                      {pendingOrder.shipping === 0 ? 'Free' : `₹${pendingOrder?.shipping?.toFixed(2) || "0.0"}`}
                     </span>
                   </div>
 
                   <div className="flex justify-between text-lg font-bold text-gray-900">
                     <span>Total</span>
-                    <span className="text-blue-600">${pendingOrder.total.toFixed(2)}</span>
+                    <span className="text-blue-600">₹{pendingOrder?.total?.toFixed(2) || "0.0"}</span>
                   </div>
                 </div>
 
@@ -382,7 +422,7 @@ export default function PaymentPage() {
                         <p className="text-xs text-gray-600">Qty: {item.quantity}</p>
                       </div>
                       <span className="font-semibold">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ₹{(item.price * item.quantity).toFixed(2)}
                       </span>
                     </div>
                   ))}

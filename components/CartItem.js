@@ -64,7 +64,7 @@ export default function CartItem({ item }) {
       {/* Product Details */}
       <div className="flex-1 min-w-0">
         <h3 className="text-lg font-semibold text-gray-800">{item.name}</h3>
-        <p className="text-gray-600 text-sm mt-1">Price: ${item.price.toFixed(2)}</p>
+        <p className="text-gray-600 text-sm mt-1">Price: ₹{item.price.toFixed(2)}</p>
       </div>
 
       {/* Quantity Controls */}
@@ -101,7 +101,7 @@ export default function CartItem({ item }) {
       <div className="text-right">
         <p className="text-sm text-gray-600">Subtotal</p>
         <p className="text-xl font-bold text-gray-900">
-          ${(item.price * item.quantity).toFixed(2)}
+          ₹{(item.price * item.quantity).toFixed(2)}
         </p>
       </div>
 

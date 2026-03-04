@@ -208,7 +208,7 @@ export default function ProfilePage() {
                   value={profileData.name}
                   onChange={handleProfileChange}
                   disabled={isLoading}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 transition ₹{
                     errors.name
                       ? 'border-red-500 focus:ring-red-500'
                       : 'border-gray-300 focus:ring-blue-500'

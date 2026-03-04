@@ -43,7 +43,7 @@ export default function ProductCardDetail({ product }) {
         {/* Price */}
         <div className="flex items-center gap-2 mb-4">
           <span className="text-lg font-bold text-gray-900">
-            <p>${product?.price?.toFixed(2)}</p>
+            <p>₹{product?.price?.toFixed(2)}</p>
           </span>
           {product.discount && (
             <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-semibold">

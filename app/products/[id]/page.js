@@ -21,7 +21,7 @@ export default function ProductDetailPage({ params }) {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`https://backend-8sca.onrender.com/api/allProducts/${id}`);
+        const res = await fetch(`http://localhost:5000/api/allProducts/${id}`);
 
         if (!res.ok) {
           setProduct(null);
@@ -141,7 +141,7 @@ export default function ProductDetailPage({ params }) {
               {/* Price */}
               <div className="mb-6">
                 <p className="text-4xl font-bold text-gray-900">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toFixed(2)}
                 </p>
                 {product.discount && (
                   <p className="text-sm text-gray-600 mt-2">
@@ -168,7 +168,7 @@ export default function ProductDetailPage({ params }) {
 
               {/* Additional Info */}
               <div className="bg-gray-50 p-4 rounded-lg text-sm text-gray-600">
-                <p>✓ Free shipping on orders over $50</p>
+                <p>✓ Free shipping on orders over ₹50</p>
                 <p>✓ 30-day money-back guarantee</p>
                 <p>✓ 1-year warranty included</p>
               </div>
